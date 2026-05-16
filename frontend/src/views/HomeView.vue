@@ -1,10 +1,16 @@
 <template>
   <section>
     <div class="hero">
-      <h1>Catálogo de productos</h1>
-      <p>
-        Explora productos disponibles en MercApp usando búsqueda por texto y filtro por categoría.
-      </p>
+      <div>
+        <h1>Catálogo de productos</h1>
+        <p>
+          Explora productos disponibles en MercApp usando búsqueda por texto y filtro por categoría.
+        </p>
+      </div>
+
+      <RouterLink to="/product/new" class="btn primary">
+        Nuevo producto
+      </RouterLink>
     </div>
 
     <div class="filters">
@@ -41,72 +47,77 @@
 
     <div v-else class="grid">
       <ProductCard
-        v-for="product in filteredProducts"
-        :key="product.id"
-        :product="product"
-        @added-to-cart="addToCart"
+        v-for="productItem in filteredProducts"
+        :key="productItem.id"
+        :product="productItem"
+        @added-to-cart="handleAddToCart"
+        @delete-product="handleDeleteProduct"
       />
     </div>
   </section>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import ProductCard from '../components/ProductCard.vue';
+import { useProducts } from '../composables/useProducts';
+import { useCart } from '../composables/useCart';
 
-const API_URL = 'http://localhost:3000/api';
+const {
+  products,
+  categories,
+  loading,
+  error,
+  getProducts,
+  getCategories,
+  deleteProduct
+} = useProducts();
 
-const products = ref([]);
-const categories = ref([]);
+const { addToCart } = useCart();
+
 const search = ref('');
 const selectedCategory = ref('');
-const loading = ref(true);
-const error = ref('');
 
 const filteredProducts = computed(() => {
   const text = search.value.toLowerCase().trim();
 
-  return products.value.filter((product) => {
+  return products.value.filter((productItem) => {
     const matchesSearch =
-      product.name.toLowerCase().includes(text) ||
-      product.description.toLowerCase().includes(text);
+      productItem.name.toLowerCase().includes(text) ||
+      productItem.description.toLowerCase().includes(text);
 
     const matchesCategory =
       selectedCategory.value === '' ||
-      product.categoryId === Number(selectedCategory.value);
+      productItem.categoryId === Number(selectedCategory.value);
 
     return matchesSearch && matchesCategory;
   });
 });
 
-const loadData = async () => {
+const handleAddToCart = (productItem) => {
+  addToCart(productItem);
+  alert(`Producto agregado al carrito: ${productItem.name}`);
+};
+
+const handleDeleteProduct = async (id) => {
+  const confirmed = confirm('¿Está seguro de eliminar este producto?');
+
+  if (!confirmed) {
+    return;
+  }
+
   try {
-    loading.value = true;
-    error.value = '';
-
-    const [productsResponse, categoriesResponse] = await Promise.all([
-      fetch(`${API_URL}/products`),
-      fetch(`${API_URL}/categories`)
-    ]);
-
-    if (!productsResponse.ok || !categoriesResponse.ok) {
-      throw new Error('No se pudo cargar la información del catálogo.');
-    }
-
-    products.value = await productsResponse.json();
-    categories.value = await categoriesResponse.json();
+    await deleteProduct(id);
+    await getProducts();
   } catch (err) {
-    error.value = err.message;
-  } finally {
-    loading.value = false;
+    alert(err.message);
   }
 };
 
-const addToCart = (product) => {
-  alert(`Producto agregado al carrito: ${product.name}`);
-};
-
-onMounted(() => {
-  loadData();
+onMounted(async () => {
+  await Promise.all([
+    getProducts(),
+    getCategories()
+  ]);
 });
 </script>

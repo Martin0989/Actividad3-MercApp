@@ -13,11 +13,21 @@
 
       <div class="product-actions">
         <RouterLink :to="`/product/${product.id}`" class="btn secondary">
-          Ver detalle
+          Ver
         </RouterLink>
 
         <button class="btn primary" @click="$emit('added-to-cart', product)">
           Añadir
+        </button>
+      </div>
+
+      <div class="product-actions admin-actions">
+        <RouterLink :to="`/product/${product.id}/edit`" class="btn warning">
+          Editar
+        </RouterLink>
+
+        <button class="btn danger" @click="$emit('delete-product', product.id)">
+          Eliminar
         </button>
       </div>
     </div>
@@ -32,5 +42,5 @@ defineProps({
   }
 });
 
-defineEmits(['added-to-cart']);
+defineEmits(['added-to-cart', 'delete-product']);
 </script>
