@@ -5,7 +5,7 @@ const productsRoutes = require('./routes/products');
 const categoriesRoutes = require('./routes/categories');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -14,10 +14,19 @@ app.get('/', (req, res) => {
   res.status(200).json({
     message: 'API REST de MercApp funcionando correctamente',
     endpoints: {
+      health: '/health',
       products: '/api/products',
       productById: '/api/products/:id',
       categories: '/api/categories'
     }
+  });
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'API MercApp funcionando correctamente',
+    environment: process.env.NODE_ENV || 'development'
   });
 });
 
@@ -39,5 +48,5 @@ app.use((error, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
+  console.log(`Servidor ejecutándose en el puerto ${PORT}`);
 });
