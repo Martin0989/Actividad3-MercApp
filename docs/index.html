@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MercApp - Despliegue Unidad 4</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f6f8;
+      color: #1f2937;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    section {
+      background: white;
+      margin-bottom: 20px;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    h1, h2 {
+      margin-top: 0;
+    }
+
+    a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #d1d5db;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #e5e7eb;
+    }
+
+    code {
+      background: #f3f4f6;
+      padding: 3px 6px;
+      border-radius: 5px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MercApp</h1>
+    <p>Micrositio del proyecto - Unidad 4: Despliegue y publicación de aplicaciones</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Datos del estudiante</h2>
+      <p><strong>Estudiante:</strong> Martin Ortiz</p>
+      <p><strong>Asignatura:</strong> Aplicaciones Web</p>
+      <p><strong>Proyecto:</strong> MercApp</p>
+    </section>
+
+    <section>
+      <h2>Resumen técnico del sistema</h2>
+      <p>
+        MercApp es una aplicación web tipo SPA desarrollada con Vue 3 para la gestión
+        de productos y categorías. El sistema cuenta con un backend propio construido
+        con Node.js y Express, conectado a una base de datos MongoDB Atlas.
+      </p>
+      <p>
+        En la Unidad 4 se realizó el despliegue completo del sistema usando servicios
+        en la nube: MongoDB Atlas para la base de datos, Railway para la API,
+        Netlify para el frontend y GitHub Pages para este micrositio.
+      </p>
+    </section>
+
+    <section>
+      <h2>Arquitectura de despliegue</h2>
+      <ul>
+        <li><strong>Frontend:</strong> Vue 3 + Vite publicado en Netlify.</li>
+        <li><strong>Backend:</strong> Node.js + Express publicado en Railway.</li>
+        <li><strong>Base de datos:</strong> MongoDB Atlas, base <code>mercapp</code>.</li>
+        <li><strong>Repositorio:</strong> GitHub.</li>
+        <li><strong>Micrositio:</strong> GitHub Pages.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Enlaces del proyecto</h2>
+      <p><strong>Repositorio GitHub:</strong>
+        <a href="https://github.com/Martin0989/Actividad3-MercApp" target="_blank">
+          Ver repositorio
+        </a>
+      </p>
+      <p><strong>Frontend Netlify:</strong>
+        <a href="https://bespoke-palmier-fee753.netlify.app" target="_blank">
+          Abrir MercApp
+        </a>
+      </p>
+      <p><strong>Backend Railway:</strong>
+        <a href="https://actividad3-mercapp-production.up.railway.app" target="_blank">
+          Abrir API
+        </a>
+      </p>
+    </section>
+
+    <section>
+      <h2>Endpoints principales</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Método</th>
+            <th>Ruta</th>
+            <th>Descripción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>GET</td>
+            <td><code>/health</code></td>
+            <td>Verifica el estado de la API y la conexión general del servicio.</td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td><code>/api/products</code></td>
+            <td>Lista todos los productos registrados.</td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td><code>/api/products/:id</code></td>
+            <td>Consulta un producto por su identificador.</td>
+          </tr>
+          <tr>
+            <td>POST</td>
+            <td><code>/api/products</code></td>
+            <td>Crea un nuevo producto.</td>
+          </tr>
+          <tr>
+            <td>PUT / PATCH</td>
+            <td><code>/api/products/:id</code></td>
+            <td>Actualiza un producto existente.</td>
+          </tr>
+          <tr>
+            <td>DELETE</td>
+            <td><code>/api/products/:id</code></td>
+            <td>Elimina un producto.</td>
+          </tr>
+          <tr>
+            <td>GET</td>
+            <td><code>/api/categories</code></td>
+            <td>Lista todas las categorías registradas.</td>
+          </tr>
+          <tr>
+            <td>POST</td>
+            <td><code>/api/categories</code></td>
+            <td>Crea una nueva categoría.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Guía breve de ejecución local</h2>
+      <h3>Backend</h3>
+      <p>Crear un archivo <code>backend/.env</code> basado en <code>backend/.env.example</code>.</p>
+      <pre><code>cd backend
+npm install
+npm run dev</code></pre>
+
+      <h3>Frontend</h3>
+      <p>Crear un archivo de entorno con la variable <code>VITE_API_URL</code>.</p>
+      <pre><code>cd frontend
+npm install
+npm run dev</code></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>MercApp - Actividad Unidad 4 - Aplicaciones Web</p>
+  </footer>
+</body>
+</html>
