@@ -1,11 +1,16 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 
+const connectDB = require('./config/db');
 const productsRoutes = require('./routes/products');
 const categoriesRoutes = require('./routes/categories');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+connectDB();
 
 app.use(cors());
 app.use(express.json());
@@ -26,7 +31,8 @@ app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
     message: 'API MercApp funcionando correctamente',
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    database: 'MongoDB Atlas'
   });
 });
 

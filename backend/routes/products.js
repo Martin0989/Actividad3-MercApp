@@ -1,19 +1,7 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
+const Product = require('../models/Product');
 
 const router = express.Router();
-
-const productsPath = path.join(__dirname, '../data/products.json');
-
-const readProducts = () => {
-  const data = fs.readFileSync(productsPath, 'utf-8');
-  return JSON.parse(data);
-};
-
-const writeProducts = (products) => {
-  fs.writeFileSync(productsPath, JSON.stringify(products, null, 2));
-};
 
 const isValidUrl = (url) => {
   try {
@@ -54,171 +42,195 @@ const validateProduct = (product) => {
   return errors;
 };
 
-router.get('/', (req, res) => {
-  const products = readProducts();
-  res.status(200).json(products);
+router.get('/', async (req, res, next) => {
+  try {
+    const products = await Product.find().sort({ id: 1 });
+    res.status(200).json(products);
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.get('/:id', (req, res) => {
-  const id = Number(req.params.id);
+router.get('/:id', async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
 
-  if (Number.isNaN(id)) {
-    return res.status(400).json({
-      message: 'El id del producto debe ser numérico'
-    });
+    if (Number.isNaN(id)) {
+      return res.status(400).json({
+        message: 'El id del producto debe ser numérico'
+      });
+    }
+
+    const product = await Product.findOne({ id });
+
+    if (!product) {
+      return res.status(404).json({
+        message: 'Producto no encontrado'
+      });
+    }
+
+    res.status(200).json(product);
+  } catch (error) {
+    next(error);
   }
-
-  const products = readProducts();
-  const product = products.find(item => item.id === id);
-
-  if (!product) {
-    return res.status(404).json({
-      message: 'Producto no encontrado'
-    });
-  }
-
-  res.status(200).json(product);
 });
 
-router.post('/', (req, res) => {
-  const products = readProducts();
+router.post('/', async (req, res, next) => {
+  try {
+    const lastProduct = await Product.findOne().sort({ id: -1 });
 
-  const newProduct = {
-    id: products.length > 0 ? Math.max(...products.map(item => item.id)) + 1 : 1,
-    name: req.body.name,
-    description: req.body.description,
-    price: Number(req.body.price),
-    imageUrl: req.body.imageUrl,
-    categoryId: Number(req.body.categoryId),
-    stock: Number(req.body.stock)
-  };
+    const newProductData = {
+      id: lastProduct ? lastProduct.id + 1 : 1,
+      name: req.body.name,
+      description: req.body.description,
+      price: Number(req.body.price),
+      imageUrl: req.body.imageUrl,
+      categoryId: Number(req.body.categoryId),
+      stock: Number(req.body.stock)
+    };
 
-  const errors = validateProduct(newProduct);
+    const errors = validateProduct(newProductData);
 
-  if (errors.length > 0) {
-    return res.status(400).json({
-      message: 'Datos inválidos',
-      errors
-    });
+    if (errors.length > 0) {
+      return res.status(400).json({
+        message: 'Datos inválidos',
+        errors
+      });
+    }
+
+    const newProduct = await Product.create(newProductData);
+
+    res.status(201).json(newProduct);
+  } catch (error) {
+    next(error);
   }
-
-  products.push(newProduct);
-  writeProducts(products);
-
-  res.status(201).json(newProduct);
 });
 
-router.put('/:id', (req, res) => {
-  const id = Number(req.params.id);
+router.put('/:id', async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
 
-  if (Number.isNaN(id)) {
-    return res.status(400).json({
-      message: 'El id del producto debe ser numérico'
-    });
+    if (Number.isNaN(id)) {
+      return res.status(400).json({
+        message: 'El id del producto debe ser numérico'
+      });
+    }
+
+    const updatedProductData = {
+      id,
+      name: req.body.name,
+      description: req.body.description,
+      price: Number(req.body.price),
+      imageUrl: req.body.imageUrl,
+      categoryId: Number(req.body.categoryId),
+      stock: Number(req.body.stock)
+    };
+
+    const errors = validateProduct(updatedProductData);
+
+    if (errors.length > 0) {
+      return res.status(400).json({
+        message: 'Datos inválidos',
+        errors
+      });
+    }
+
+    const updatedProduct = await Product.findOneAndUpdate(
+      { id },
+      updatedProductData,
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({
+        message: 'Producto no encontrado'
+      });
+    }
+
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    next(error);
   }
-
-  const products = readProducts();
-  const index = products.findIndex(item => item.id === id);
-
-  if (index === -1) {
-    return res.status(404).json({
-      message: 'Producto no encontrado'
-    });
-  }
-
-  const updatedProduct = {
-    id,
-    name: req.body.name,
-    description: req.body.description,
-    price: Number(req.body.price),
-    imageUrl: req.body.imageUrl,
-    categoryId: Number(req.body.categoryId),
-    stock: Number(req.body.stock)
-  };
-
-  const errors = validateProduct(updatedProduct);
-
-  if (errors.length > 0) {
-    return res.status(400).json({
-      message: 'Datos inválidos',
-      errors
-    });
-  }
-
-  products[index] = updatedProduct;
-  writeProducts(products);
-
-  res.status(200).json(updatedProduct);
 });
 
-router.patch('/:id', (req, res) => {
-  const id = Number(req.params.id);
+router.patch('/:id', async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
 
-  if (Number.isNaN(id)) {
-    return res.status(400).json({
-      message: 'El id del producto debe ser numérico'
-    });
+    if (Number.isNaN(id)) {
+      return res.status(400).json({
+        message: 'El id del producto debe ser numérico'
+      });
+    }
+
+    const currentProduct = await Product.findOne({ id });
+
+    if (!currentProduct) {
+      return res.status(404).json({
+        message: 'Producto no encontrado'
+      });
+    }
+
+    const updatedProductData = {
+      ...currentProduct.toObject(),
+      ...req.body,
+      id,
+      price: req.body.price !== undefined ? Number(req.body.price) : currentProduct.price,
+      categoryId: req.body.categoryId !== undefined ? Number(req.body.categoryId) : currentProduct.categoryId,
+      stock: req.body.stock !== undefined ? Number(req.body.stock) : currentProduct.stock
+    };
+
+    const errors = validateProduct(updatedProductData);
+
+    if (errors.length > 0) {
+      return res.status(400).json({
+        message: 'Datos inválidos',
+        errors
+      });
+    }
+
+    const updatedProduct = await Product.findOneAndUpdate(
+      { id },
+      updatedProductData,
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    next(error);
   }
-
-  const products = readProducts();
-  const index = products.findIndex(item => item.id === id);
-
-  if (index === -1) {
-    return res.status(404).json({
-      message: 'Producto no encontrado'
-    });
-  }
-
-  const currentProduct = products[index];
-
-  const updatedProduct = {
-    ...currentProduct,
-    ...req.body,
-    id,
-    price: req.body.price !== undefined ? Number(req.body.price) : currentProduct.price,
-    categoryId: req.body.categoryId !== undefined ? Number(req.body.categoryId) : currentProduct.categoryId,
-    stock: req.body.stock !== undefined ? Number(req.body.stock) : currentProduct.stock
-  };
-
-  const errors = validateProduct(updatedProduct);
-
-  if (errors.length > 0) {
-    return res.status(400).json({
-      message: 'Datos inválidos',
-      errors
-    });
-  }
-
-  products[index] = updatedProduct;
-  writeProducts(products);
-
-  res.status(200).json(updatedProduct);
 });
 
-router.delete('/:id', (req, res) => {
-  const id = Number(req.params.id);
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
 
-  if (Number.isNaN(id)) {
-    return res.status(400).json({
-      message: 'El id del producto debe ser numérico'
+    if (Number.isNaN(id)) {
+      return res.status(400).json({
+        message: 'El id del producto debe ser numérico'
+      });
+    }
+
+    const deletedProduct = await Product.findOneAndDelete({ id });
+
+    if (!deletedProduct) {
+      return res.status(404).json({
+        message: 'Producto no encontrado'
+      });
+    }
+
+    res.status(200).json({
+      message: 'Producto eliminado correctamente'
     });
+  } catch (error) {
+    next(error);
   }
-
-  const products = readProducts();
-  const productExists = products.some(item => item.id === id);
-
-  if (!productExists) {
-    return res.status(404).json({
-      message: 'Producto no encontrado'
-    });
-  }
-
-  const filteredProducts = products.filter(item => item.id !== id);
-  writeProducts(filteredProducts);
-
-  res.status(200).json({
-    message: 'Producto eliminado correctamente'
-  });
 });
 
 module.exports = router;
