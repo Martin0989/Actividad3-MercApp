@@ -1,0 +1,12 @@
+{
+  "name": "actividad3-mercapp-deploy",
+  "version": "1.0.0",
+  "description": "Configuración de despliegue para MercApp backend en Railway",
+  "scripts": {
+    "build": "cd backend && npm install",
+    "start": "cd backend && npm start"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}
