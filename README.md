@@ -1,221 +1,258 @@
-# MercApp - Catálogo de Productos SPA + API propia
+# MercApp - Actividad Unidad 4
 
 ## Datos del estudiante
 
-- Nombre: Martin Ortiz
-- Universidad: Universidad Politécnica Salesiana
-- Asignatura: Aplicaciones Web
-- Unidad: Unidad 3 - Programación del lado del cliente
-- Actividad: Desarrollo de una aplicación web para el Catálogo de Productos SPA + API propia
+- **Estudiante:** Martin Ortiz
+- **Universidad:** Universidad Politécnica Salesiana
+- **Asignatura:** Aplicaciones Web
+- **Unidad:** Unidad 4 - Despliegue y publicación de aplicaciones
+- **Proyecto:** MercApp
 
 ---
 
 ## Descripción del proyecto
 
-MercApp es una aplicación web de una sola página, desarrollada con **Vue 3 + Vite**, que consume una **API REST propia** construida con **Node.js y Express**.
+MercApp es una aplicación web tipo SPA desarrollada con **Vue 3 + Vite** en el frontend y una **API REST propia con Node.js + Express** en el backend.
 
-El proyecto permite gestionar un catálogo de productos con búsqueda, filtro por categoría, detalle de producto, creación, edición, eliminación y manejo de un carrito simple con persistencia en `localStorage`.
+El sistema permite visualizar un catálogo de productos, consultar productos, filtrar por categorías y realizar operaciones básicas de gestión como creación, actualización y eliminación de productos.
 
-Esta actividad corresponde a la Unidad 3, enfocada en la programación del lado del cliente mediante componentes, rutas, reactividad, propiedades computadas, comunicación por props/eventos, composables, consumo asíncrono de datos y lazy loading de vistas.
+En la Unidad 4 se realizó el despliegue completo del proyecto desarrollado en la Unidad 3, integrando servicios en la nube para base de datos, backend, frontend y documentación pública.
+
+---
+
+## Arquitectura de despliegue
+
+La aplicación fue desplegada utilizando la siguiente arquitectura:
+
+- **Frontend:** Vue 3 + Vite desplegado en Netlify.
+- **Backend:** Node.js + Express desplegado en Railway.
+- **Base de datos:** MongoDB Atlas.
+- **Micrositio:** GitHub Pages.
+- **Control de versiones:** GitHub.
+
+Flujo general:
+
+```txt
+Usuario
+  ↓
+Frontend Netlify
+  ↓
+API Backend Railway
+  ↓
+Base de datos MongoDB Atlas
+```
+
+---
+
+## Enlaces públicos
+
+### Repositorio GitHub
+
+https://github.com/Martin0989/Actividad3-MercApp
+
+### Frontend publicado en Netlify
+
+https://bespoke-palmier-fee753.netlify.app
+
+### Backend publicado en Railway
+
+https://actividad3-mercapp-production.up.railway.app
+
+### Micrositio publicado en GitHub Pages
+
+https://martin0989.github.io/Actividad3-MercApp/
 
 ---
 
 ## Tecnologías utilizadas
+
+### Frontend
+
+- Vue 3
+- Vite
+- JavaScript
+- HTML5
+- CSS3
+- Consumo de API mediante `fetch`
+- Variables de entorno `VITE_*`
 
 ### Backend
 
 - Node.js
 - Express
 - CORS
-- Nodemon
+- Dotenv
+- Mongoose
 - API REST
-- Persistencia mediante archivo JSON
 
-### Frontend
+### Base de datos
 
-- Vue 3
-- Vite
-- Vue Router
-- Composition API
-- Single File Components
-- JavaScript
-- CSS
-- LocalStorage
+- MongoDB Atlas
+- MongoDB Compass
+- Base de datos: `mercapp`
+- Colecciones:
+  - `products`
+  - `categories`
+
+### Despliegue
+
+- Railway para el backend.
+- Netlify para el frontend.
+- GitHub Pages para el micrositio.
+- GitHub para control de versiones.
 
 ---
 
-## Estructura del proyecto
+## Estructura general del proyecto
 
-```text
+```txt
 Actividad3-MercApp/
-├── backend/
-│   ├── data/
-│   │   ├── categories.json
-│   │   └── products.json
-│   ├── routes/
-│   │   ├── categories.js
-│   │   └── products.js
-│   ├── package.json
-│   └── server.js
-│
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   │   ├── components/
-│   │   │   └── ProductCard.vue
-│   │   ├── composables/
-│   │   │   ├── useApi.js
-│   │   │   ├── useCart.js
-│   │   │   └── useProducts.js
-│   │   ├── router/
-│   │   │   └── index.js
-│   │   ├── views/
-│   │   │   ├── AboutView.vue
-│   │   │   ├── CartView.vue
-│   │   │   ├── HomeView.vue
-│   │   │   ├── NotFoundView.vue
-│   │   │   ├── ProductDetailView.vue
-│   │   │   └── ProductFormView.vue
-│   │   ├── App.vue
-│   │   ├── main.js
-│   │   └── style.css
-│   ├── package.json
-│   └── vite.config.js
-│
-├── .gitignore
-├── README.md
-└── readme.txt
-
+├─ backend/
+│  ├─ config/
+│  │  └─ db.js
+│  ├─ data/
+│  ├─ models/
+│  │  ├─ Product.js
+│  │  └─ Category.js
+│  ├─ routes/
+│  │  ├─ products.js
+│  │  └─ categories.js
+│  ├─ .env.example
+│  ├─ package.json
+│  ├─ package-lock.json
+│  └─ server.js
+├─ frontend/
+│  ├─ dist/
+│  ├─ public/
+│  ├─ src/
+│  ├─ .env.example
+│  ├─ package.json
+│  ├─ package-lock.json
+│  └─ vite.config.js
+├─ docs/
+│  └─ index.html
+├─ .gitignore
+├─ package.json
+├─ README.md
+└─ readme.txt
 ```
 
 ---
 
-## Funcionalidades implementadas
+## Endpoints principales de la API
 
-### Backend
-
-- API REST propia con Express.
-- Endpoint principal de prueba.
-- Consulta de todos los productos.
-- Consulta de producto por ID.
-- Consulta de categorías.
-- Creación de productos.
-- Edición completa de productos.
-- Actualización parcial de productos.
-- Eliminación de productos.
-- Validación básica de campos obligatorios.
-- Manejo de errores HTTP:
-  - `400` para datos inválidos.
-  - `404` para rutas o productos no encontrados.
-  - `500` para errores internos.
-- Persistencia de productos mediante archivo JSON.
-- Uso de datos semilla para productos y categorías.
-
-### Frontend
-
-- Aplicación SPA creada con Vue 3 y Vite.
-- Configuración de Vue Router.
-- Vista principal de catálogo.
-- Vista de detalle de producto.
-- Vista de carrito.
-- Vista de acerca de.
-- Vista 404 para rutas no encontradas.
-- Componente reutilizable `ProductCard`.
-- Comunicación entre componentes mediante props y eventos personalizados.
-- Búsqueda de productos por nombre o descripción.
-- Filtro de productos por categoría.
-- Consumo asíncrono de datos desde la API propia.
-- Estados de carga y error.
-- Formulario para crear productos.
-- Formulario para editar productos.
-- Validación de formulario con `v-model`.
-- Eliminación de productos desde la interfaz.
-- Carrito con:
-  - Agregar productos.
-  - Quitar productos.
-  - Aumentar cantidad.
-  - Disminuir cantidad.
-  - Vaciar carrito.
-  - Total calculado.
-  - Persistencia en `localStorage`.
-- Composables:
-  - `useApi`
-  - `useProducts`
-  - `useCart`
-- Lazy loading en vistas `/cart` y `/about`.
-- Uso de `<Suspense>` con fallback de carga.
-- Diseño visual responsivo.
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/` | Muestra información general de la API |
+| GET | `/health` | Verifica el estado de la API |
+| GET | `/api/products` | Lista todos los productos |
+| GET | `/api/products/:id` | Consulta un producto por ID |
+| POST | `/api/products` | Crea un nuevo producto |
+| PUT | `/api/products/:id` | Actualiza completamente un producto |
+| PATCH | `/api/products/:id` | Actualiza parcialmente un producto |
+| DELETE | `/api/products/:id` | Elimina un producto |
+| GET | `/api/categories` | Lista todas las categorías |
+| GET | `/api/categories/:id` | Consulta una categoría por ID |
+| POST | `/api/categories` | Crea una nueva categoría |
+| PUT | `/api/categories/:id` | Actualiza una categoría |
+| DELETE | `/api/categories/:id` | Elimina una categoría |
 
 ---
 
-## Modelos de datos
+## Ejemplos de endpoints publicados
 
-### Product
+### Estado de la API
 
-```json
-{
-  "id": 1,
-  "name": "Laptop Lenovo IdeaPad",
-  "description": "Laptop para estudio y trabajo con buen rendimiento para tareas diarias.",
-  "price": 750,
-  "imageUrl": "https://ejemplo.com/imagen.jpg",
-  "categoryId": 1,
-  "stock": 8
-}
+```txt
+https://actividad3-mercapp-production.up.railway.app/health
 ```
 
-### Category
+### Lista de productos
 
-```json
-{
-  "id": 1,
-  "name": "Tecnología"
-}
+```txt
+https://actividad3-mercapp-production.up.railway.app/api/products
+```
+
+### Lista de categorías
+
+```txt
+https://actividad3-mercapp-production.up.railway.app/api/categories
 ```
 
 ---
 
-## Endpoints del API
+## Variables de entorno
 
-### Productos
+Las credenciales reales no se incluyen en el repositorio por seguridad.  
+Para ejecutar el proyecto localmente se deben crear archivos `.env` tomando como referencia los archivos `.env.example`.
 
-```text
-GET /api/products
-GET /api/products/:id
-POST /api/products
-PUT /api/products/:id
-PATCH /api/products/:id
-DELETE /api/products/:id
+---
+
+### Variables del backend
+
+Crear un archivo:
+
+```txt
+backend/.env
 ```
 
-### Categorías
+basado en:
 
-```text
-GET /api/categories
+```txt
+backend/.env.example
+```
+
+Ejemplo:
+
+```env
+NODE_ENV=development
+PORT=3000
+MONGODB_URI=mongodb://usuario:contraseña@servidor/mercapp
+FRONTEND_URL=http://localhost:5173
+NETLIFY_URL=https://tu-sitio.netlify.app
+```
+
+> Nota: La variable `MONGODB_URI` debe contener la cadena real de conexión a MongoDB Atlas, pero no debe subirse a GitHub.
+
+---
+
+### Variables del frontend
+
+Crear un archivo llamado `.env` o `.env.production` dentro de la carpeta:
+
+```txt
+frontend/
+```
+
+Ejemplo para desarrollo local:
+
+```env
+VITE_API_URL=http://localhost:3000/api
+VITE_APP_TITLE=MercApp
+VITE_APP_VERSION=1.0.0
+```
+
+Ejemplo usado para producción:
+
+```env
+VITE_API_URL=https://actividad3-mercapp-production.up.railway.app/api
+VITE_APP_TITLE=MercApp
+VITE_APP_VERSION=1.0.0
 ```
 
 ---
 
-## Rutas del frontend
-
-```text
-/                    Catálogo de productos
-/product/new         Crear nuevo producto
-/product/:id         Detalle de producto
-/product/:id/edit    Editar producto
-/cart                Carrito
-/about               Acerca de
-/:pathMatch          Página 404
-```
-
----
-
-## Instalación y ejecución del proyecto
+## Ejecución local del proyecto
 
 ### 1. Clonar el repositorio
 
 ```bash
 git clone https://github.com/Martin0989/Actividad3-MercApp.git
+```
+
+Ingresar a la carpeta del proyecto:
+
+```bash
 cd Actividad3-MercApp
 ```
 
@@ -223,7 +260,213 @@ cd Actividad3-MercApp
 
 ### 2. Ejecutar el backend
 
-Desde la carpeta principal del proyecto:
+Ingresar a la carpeta del backend:
+
+```bash
+cd backend
+```
+
+Instalar dependencias:
+
+```bash
+npm install
+```
+
+Ejecutar en modo desarrollo:
+
+```bash
+npm run dev
+```
+
+El backend se ejecuta en:
+
+```txt
+http://localhost:3000
+```
+
+Endpoint de prueba:
+
+```txt
+http://localhost:3000/health
+```
+
+---
+
+### 3. Ejecutar el frontend
+
+En otra terminal, ingresar a la carpeta del frontend:
+
+```bash
+cd frontend
+```
+
+Instalar dependencias:
+
+```bash
+npm install
+```
+
+Ejecutar el frontend:
+
+```bash
+npm run dev
+```
+
+El frontend se ejecuta normalmente en:
+
+```txt
+http://localhost:5173
+```
+
+---
+
+## Build del frontend
+
+Para generar la versión optimizada de producción:
+
+```bash
+cd frontend
+npm run build
+```
+
+Este comando genera la carpeta:
+
+```txt
+frontend/dist
+```
+
+La carpeta `dist` fue utilizada para el despliegue manual en Netlify.
+
+---
+
+## Despliegue en MongoDB Atlas
+
+Para la base de datos se utilizó **MongoDB Atlas** con un clúster gratuito.
+
+Configuración realizada:
+
+- Creación del proyecto en MongoDB Atlas.
+- Creación del clúster gratuito.
+- Creación del usuario de base de datos.
+- Configuración de acceso de red.
+- Obtención de la cadena de conexión.
+- Validación de conexión mediante MongoDB Compass.
+- Creación de la base de datos `mercapp`.
+- Creación de las colecciones `products` y `categories`.
+
+---
+
+## Despliegue del backend en Railway
+
+El backend fue desplegado en Railway desde el repositorio de GitHub.
+
+Configuración aplicada:
+
+- Conexión del repositorio GitHub con Railway.
+- Configuración de variables de entorno.
+- Uso de `process.env.PORT` para el puerto asignado por Railway.
+- Conexión con MongoDB Atlas mediante `MONGODB_URI`.
+- Generación de dominio público.
+- Validación de los endpoints `/health`, `/api/products` y `/api/categories`.
+
+URL del backend:
+
+```txt
+https://actividad3-mercapp-production.up.railway.app
+```
+
+---
+
+## Despliegue del frontend en Netlify
+
+El frontend fue desplegado en Netlify mediante despliegue manual de la carpeta `dist`.
+
+Pasos realizados:
+
+- Configuración de `VITE_API_URL` apuntando a la API pública en Railway.
+- Ejecución de `npm run build`.
+- Publicación manual de la carpeta `frontend/dist`.
+- Validación del consumo de la API desde el frontend publicado.
+
+URL del frontend:
+
+```txt
+https://bespoke-palmier-fee753.netlify.app
+```
+
+---
+
+## Configuración de CORS
+
+Para permitir la comunicación entre el frontend publicado en Netlify y el backend publicado en Railway, se configuraron variables de entorno en Railway:
+
+```env
+FRONTEND_URL=https://bespoke-palmier-fee753.netlify.app
+NETLIFY_URL=https://bespoke-palmier-fee753.netlify.app
+```
+
+Con esto se validó que el frontend pueda consumir correctamente los endpoints de la API sin errores de CORS.
+
+---
+
+## Micrositio en GitHub Pages
+
+Se creó un micrositio informativo dentro de la carpeta:
+
+```txt
+docs/
+```
+
+El archivo principal del micrositio es:
+
+```txt
+docs/index.html
+```
+
+El micrositio contiene:
+
+- Datos del estudiante.
+- Resumen técnico del sistema.
+- Arquitectura de despliegue.
+- Enlaces públicos del proyecto.
+- Tabla de endpoints.
+- Guía breve de ejecución local.
+
+URL del micrositio:
+
+```txt
+https://martin0989.github.io/Actividad3-MercApp/
+```
+
+---
+
+## Evidencias realizadas
+
+Durante el desarrollo de la actividad se validaron los siguientes puntos:
+
+- Proyecto local funcionando.
+- Repositorio actualizado en GitHub.
+- Backend preparado con `process.env.PORT`.
+- Endpoint `/health` creado y probado.
+- MongoDB Atlas configurado.
+- MongoDB Compass conectado correctamente.
+- Base de datos `mercapp` creada.
+- Colecciones `products` y `categories` creadas.
+- Backend conectado a MongoDB Atlas.
+- API publicada en Railway.
+- Endpoints de Railway funcionando.
+- Frontend configurado con `VITE_API_URL`.
+- Build de producción generado con Vite.
+- Frontend publicado en Netlify.
+- Frontend consumiendo la API pública.
+- Variables de CORS actualizadas.
+- Micrositio publicado en GitHub Pages.
+
+---
+
+## Comandos útiles
+
+### Backend
 
 ```bash
 cd backend
@@ -231,26 +474,7 @@ npm install
 npm run dev
 ```
 
-El backend se ejecuta en:
-
-```text
-http://localhost:3000
-```
-
-Rutas principales para probar el backend:
-
-```text
-http://localhost:3000
-http://localhost:3000/api/products
-http://localhost:3000/api/products/1
-http://localhost:3000/api/categories
-```
-
----
-
-### 3. Ejecutar el frontend
-
-Abrir otra terminal desde la carpeta principal del proyecto:
+### Frontend
 
 ```bash
 cd frontend
@@ -258,110 +482,30 @@ npm install
 npm run dev
 ```
 
-El frontend se ejecuta normalmente en:
-
-```text
-http://localhost:5173
-```
-
----
-
-## Pruebas realizadas
-
-Se verificó el funcionamiento de:
-
-- Carga del catálogo de productos.
-- Búsqueda por nombre y descripción.
-- Filtro por categoría.
-- Visualización del detalle de producto.
-- Creación de nuevos productos.
-- Edición de productos existentes.
-- Eliminación de productos.
-- Agregar productos al carrito.
-- Aumentar y disminuir cantidades del carrito.
-- Eliminar productos del carrito.
-- Cálculo del total del carrito.
-- Persistencia del carrito en `localStorage`.
-- Navegación entre rutas.
-- Página 404.
-- Consumo correcto del backend desde el frontend.
-
----
-
-## Comandos Git utilizados
+### Build frontend
 
 ```bash
-git init
-git add .
-git commit -m "Primer Commit: Estructura inicial con API y Vue"
-git commit -m "Commit 2: implementacion de rutas catalogo busqueda y detalle"
-git commit -m "Commit 3: completar CRUD carrito composables y documentacion"
-git push
+cd frontend
+npm run build
+```
+
+### Vista previa del build
+
+```bash
+cd frontend
+npm run preview
 ```
 
 ---
 
-## Historial de commits
+## Estado final del proyecto
 
-El proyecto fue trabajado en tres commits principales:
+El proyecto MercApp quedó desplegado completamente en Internet utilizando:
 
-1. **Primer Commit: Estructura inicial con API y Vue**
-   - Creación de la estructura base del proyecto.
-   - Configuración inicial del backend.
-   - Creación de productos y categorías en JSON.
-   - Implementación de endpoints iniciales.
-   - Creación del frontend con Vue 3 y Vite.
+- MongoDB Atlas para la base de datos.
+- Railway para la API REST.
+- Netlify para el frontend.
+- GitHub Pages para el micrositio.
+- GitHub para control de versiones.
 
-2. **Commit 2: implementacion de rutas catalogo busqueda y detalle**
-   - Configuración de Vue Router.
-   - Creación de vistas principales.
-   - Implementación del catálogo.
-   - Consumo del API desde Vue.
-   - Búsqueda y filtro por categoría.
-   - Vista de detalle del producto.
-   - Componente ProductCard.
-
-3. **Commit 3: completar CRUD carrito composables y documentacion**
-   - CRUD completo de productos.
-   - Formulario de creación y edición.
-   - Validaciones.
-   - Implementación del carrito.
-   - Persistencia con localStorage.
-   - Composables.
-   - Lazy loading.
-   - Suspense.
-   - Documentación final.
-
----
-
-## Repositorio de GitHub
-
-```text
-https://github.com/Martin0989/Actividad3-MercApp.git
-```
-
----
-
-## Archivo readme.txt
-
-El archivo `readme.txt` ubicado en la carpeta principal contiene la URL del repositorio de GitHub
-
-Contenido del archivo:
-
-```text
-URL del repositorio de GitHub:
-
-https://github.com/Martin0989/Actividad3-MercApp.git
-```
-
----
-
-
-## Observaciones
-
-Para ejecutar correctamente la aplicación es necesario mantener corriendo al mismo tiempo:
-
-1. El backend en `http://localhost:3000`.
-2. El frontend en `http://localhost:5173`.
-
-El frontend consume la información desde la API REST propia, por lo tanto, si el backend no está activo, el catálogo no podrá cargar los productos.
+La aplicación se encuentra operativa y accesible públicamente mediante HTTPS.
